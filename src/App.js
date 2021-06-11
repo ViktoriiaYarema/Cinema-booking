@@ -1,25 +1,57 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.scss";
+import Hall from "./components/Hall";
+import BookCard from "./components/BookCard";
+import { Container, Row, Col } from "react-bootstrap";
+import { connect } from "react-redux";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App = props => {
+	return (
+		<Container>
+			<Row>
+				<Col>
+					<Hall
+						bookedSeatsData={props.bookedSeats}
+						bookingSeats={props.bookingSeats}
+						removeSeats={props.removeSeats}
+					/>
+					<BookCard
+						bookedSeatsData={props.bookedSeats}
+						removeSeats={props.removeSeats}
+						clearState={props.clearState}
+					/>
+				</Col>
+			</Row>
+		</Container>
+	);
+};
 
-export default App;
+const bookingSeats = seat => {
+	return {
+		type: "ACTIVE",
+		payload: seat,
+	};
+};
+const removeSeats = seat => {
+	return {
+		type: "NOT-ACTIVE",
+		payload: seat,
+	};
+};
+const clearState = () => {
+	return {
+		type: "CLEAR-STATE",
+	};
+};
+const mapDispatchToProps = {
+	bookingSeats,
+	removeSeats,
+	clearState,
+};
+const mapStateToProps = state => {
+	return {
+		bookedSeats: state.data,
+	};
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
